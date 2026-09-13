@@ -1,0 +1,12 @@
+[project]
+name = "hspose"
+version = "0.1.0"
+description = "Human vs. vision-model object representations on THINGS (Part 3 supplement)"
+requires-python = ">=3.10"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

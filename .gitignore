@@ -1,0 +1,14 @@
+# data and outputs are never committed — regenerate them with the pipeline
+data/*
+!data/README.md
+!data/.gitkeep
+results/*
+!results/.gitkeep
+
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/

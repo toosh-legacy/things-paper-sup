@@ -1,0 +1,10 @@
+numpy
+scipy
+pandas
+scikit-learn
+torch
+timm            # EVA02 / DINOv3 / ViT backbones
+open_clip_torch # CLIP image encoder
+torchvision     # VGG-16
+Pillow
+tqdm
