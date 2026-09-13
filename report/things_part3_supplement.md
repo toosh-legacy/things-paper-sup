@@ -2,36 +2,49 @@
 
 > Tables are left blank; they are filled in from the model runs.
 
-## Context
+## Setup: the data, the models, and building a yardstick
 
-All five models were used **frozen**: each was shown photographs of the 1,854 THINGS object
-concepts, we recorded the representation it produced for each object, and the model itself was never changed. They differ in what they were originally trained to do, and the set was chosen so that the
-comparisons between them mean something.
+### THINGS
 
-- **EVA02** — a large vision transformer trained in the ordinary way on large-scale image data. The
-  untouched starting point, before any of our lab's training.
-- **IMIC-B** — the same architecture after training for person re-identification: taught only to
-  judge whether two photographs show the same individual, never given object categories or labels.
-  It is the model this project is about, and because it shares architecture and starting point with
-  EVA02, any difference between the two is attributable to the person-identity training.
-- **CLIP** — learned by matching photographs to captions, so its object knowledge arrived through
-  language and is a semantic model.
-- **DINOv3** — learned from images alone, with no labels and no text and was a unsupervised model making it purely visual.
-- **VGG-16** — an older convolutional network trained to classify objects; included because it is
-  the exact model analysed by Mahner et al. (2025), our point of contact with the published result.
+1,854 everyday object concepts. Some have no usable image and are all-NaN in every model's feature
+file, so they are dropped everywhere, along with any triplet that mentions one of them. The dropped
+set is identical across models, so none is scored on an easier set than another.
 
-CLIP and DINOv3 together let us ask whether human-like object structure requires linguistic
-supervision or arises without it while also keeping the semantic and visual contex in play.
+|  | count |
+|---|---|
+| concepts with no usable image | |
+| objects kept | |
+| human triplets, train / test | |
 
-The human data are odd-one-out judgements collected for THINGS. A participant was shown three object
-images and asked which one did not belong. There is no right answer; the choice reveals how that
-person organises objects. Each response tells us that the two objects the participant did *not*
-choose were judged more similar to each other than either was to the third, and millions of these
-statements together describe the shape of human object space. A small number of concepts have no
-usable image and are dropped, along with any triplet mentioning them; the same concepts are dropped
-for every model, so no model is tested on an easier set than another.
+### The human judgements
 
-## Reproduction of Hebart et al. and their numbers
+Odd-one-out choices collected for THINGS: a participant was shown three object images and asked
+which one did not belong. There is no right answer; the choice reveals how that person organises
+objects. Each response says the two objects the participant did *not* choose were judged more
+similar to each other than either was to the third, and millions of these statements together
+describe the shape of human object space.
+
+### The five models
+
+All are used **frozen**: each is shown photographs of the kept concepts, we record the
+representation it produces for each object, and the model itself is never changed. They differ in
+what they were originally trained to do, and the set was chosen so the comparisons between them mean
+something.
+
+| Model | Dim | What it is |
+|---|---|---|
+| EVA02 | | large vision transformer, ordinary large-scale image training — the untouched starting point |
+| IMIC-B | | same architecture after triplet-loss training for person re-identification — the model of interest |
+| CLIP | | CLIP image encoder; language-supervised |
+| DINOv3 | | self-supervised on images alone; no labels and no text |
+| VGG-16 | | penultimate features; the model Mahner et al. (2025) used |
+
+IMIC-B was never given object categories or labels, and shares its architecture and starting point
+with EVA02 — so any difference between those two rows is attributable to the person-identity
+training rather than to architecture or scale. CLIP and DINOv3 together ask whether human-like
+object structure requires linguistic supervision or arises without it.
+
+### Building the yardstick: reproduction of Hebart et al.
 
 Everything here is measured against a model of human judgement rather than the raw responses, so we
 first rebuilt that model and checked it was sound. We re-ran SPoSE (Hebart et al., 2020) on the human
